@@ -1,14 +1,13 @@
 (ns pivotal-panorama
   (:gen-class)
-  (:use compojure))
+  (:use [compojure :only [run-server servlet]]
+        [pivotal-panorama.controllers :only [app set-api-token]]
+        [clj-pt :only [user]]
+        [clojure.contrib.except :only [throw-if-not]]))
 
-(defroutes app
-  (GET "/hello" "Hello, World!")
-  (ANY "/*"      (or (serve-file (params :*)) :next))
-  (ANY "*"       [404 (str "<h1>404 - Not Found:" (:uri request) "</h1>")]))
-
-(defn -main [& args]
-  (let [[port] args]
-    (run-server {:port (Integer. (or port 8080))}
-                "/*"
-                (servlet app))))
+(defn -main [& [api-token port]]
+  (throw-if-not api-token "A Pivotal Tracker API Token is required.")
+  (set-api-token api-token)
+  (run-server {:port (Integer. (or port 8080))}
+              "/*"
+              (servlet app)))
