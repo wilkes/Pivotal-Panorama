@@ -30,8 +30,9 @@
   (*pt-user* project id))
 
 (defn map-projects [& args]
-  (map (fn [p] [p (apply (project-for (-> p :project :id)) args)])
-       (*pt-user* projects)))
+  (map deref (map (fn [p]
+                    (future [p (apply (project-for (-> p :project :id)) args)]))
+                  (*pt-user* projects))))
 
 (defn tag [& strings]
   (keyword (apply str strings)))
