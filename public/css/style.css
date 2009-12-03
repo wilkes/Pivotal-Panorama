@@ -1,6 +1,6 @@
 body, p, ol, ul, td, th, input, textarea {
    font-family: helvetica, verdana, arial, sans-serif;
-   font-size:   16px;
+   font-size:   12px;
    font-weight: normal;
 }
 
@@ -39,8 +39,8 @@ ul {
 .card {
    position: relative;
    float:left;
-   width: 400px;
-   min-height: 150px;
+   width: 300px;
+   min-height: 100px;
    border: 1px solid #333;
    margin: 5px;
 }
@@ -52,7 +52,7 @@ ul {
 .story-name {
    font-weight: bold;
    font-size: 1.25em;
-   border-bottom: 1px solid red;
+   border-bottom: 2px solid #333;
 }
 
 .story-description {
@@ -85,12 +85,8 @@ ul {
    font-weight: bold;
 }
 
-.yellow { background-color: #EFDA8B;}
-.blue   { background-color: #9FC1CA;}
-.green  { background-color: #B9D4A1;}
-.red    { background-color: #EC7B7D;}
-
-.finished  { background-color: #EFDA8B;}
-.unstarted  { background-color: #9FC1CA;}
-.delivered   { background-color: #B9D4A1;}
-.started { background-color: #EC7B7D;}
+.started   { background-color: #9FC1CA;} /* blue */
+.finished  { background-color: #EEA679;} /* orange */
+.delivered { background-color: #EFDA8B;} /* yellow */
+.accepted  { background-color: #B9D4A1;} /* green */
+.rejected   { background-color: #EC7B7D;} /* red */

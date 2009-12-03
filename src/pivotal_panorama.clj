@@ -5,8 +5,8 @@
         [clj-pt :only [user]]
         [clojure.contrib.except :only [throw-if-not]]))
 
-(defn -main [& [api-token port]]
-  (throw-if-not api-token "A Pivotal Tracker API Token is required.")
+(load-file (format "%s/.pprc" (System/getProperty "user.home")))
+(defn -main [& [port]]
   (set-api-token api-token)
   (run-server {:port (Integer. (or port 8080))}
               "/*"
