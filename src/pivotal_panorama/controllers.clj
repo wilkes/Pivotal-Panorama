@@ -54,12 +54,31 @@
   (html-document
    "Current"
    (map (fn [[project iteration]]
-          [:div.project
-           [:h1 (-> project :project :name)]
-           (map #(story-card (:story %))
-                (-> iteration first :iteration :stories))
-           [:div.clear]])
+          (when (seq (-> iteration first :iteration :stories))
+            [:div.project
+             [:h1 (-> project :project :name)]
+             (map #(story-card (:story %))
+                  (-> iteration first :iteration :stories))
+             [:div.clear]]))
         (map-projects current))))
+
+(defn group-maps-by-values [ms k]
+  (apply merge-with concat
+         (map (fn [v] {(k v) [v]}) ms)))
+
+(defn current-iterations-by-owner []
+  (letfn [(current-by-owner [[_ iteration]]
+           (let [stories (-> iteration first :iteration :stories)]
+             (group-maps-by-values stories #(-> % :story :owned_by))))]
+    (html-document
+     "Current by Owner"
+     (map (fn [[owner stories]]
+            (when (seq stories)
+              [:div.project
+               [:h1 owner]
+               (map #(story-card (:story %)) stories)
+               [:div.clear]]))
+          (apply merge-with concat (map current-by-owner (map-projects current)))))))
 
 (defn not-implemented [feature-name]
   (let [title (str "Not Implemented: " feature-name)]
@@ -69,6 +88,7 @@
 
 (defroutes app
   (GET "/" (current-iterations))
+  (GET "/current-by-owner" (current-iterations-by-owner))
   (GET "/projects" (list-projects request))
   (GET "/projects/:id" (not-implemented "Project Summary"))
   (ANY "*"(or (serve-file (params :*))
