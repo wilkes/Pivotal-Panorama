@@ -2,7 +2,8 @@
   (:use [compojure :only [defroutes GET ANY serve-file
                           html unordered-list link-to
                           include-css]]
-        [clj-pt :only [user project projects current]]))
+        [clj-pt :only [user project projects current]])
+  (:import [java.io File]))
 
 (declare *pt-user*)
 (defn set-api-token [token]
@@ -86,10 +87,18 @@
      title
      [:h1 title])))
 
+(defn serve-classpath-file
+  "Serves a file off the classpath, i.e. bundled in the jar."
+  ([path]
+    (serve-classpath-file "public" path))
+  ([root path]
+     (ClassLoader/getSystemResource (str root path))))
+
 (defroutes app
   (GET "/" (current-iterations))
   (GET "/current-by-owner" (current-iterations-by-owner))
   (GET "/projects" (list-projects request))
   (GET "/projects/:id" (not-implemented "Project Summary"))
   (ANY "*"(or (serve-file (params :*))
+              (serve-classpath-file (params :*))
               [404 (str "<h1>404 - Not Found:" (:uri request) "</h1>")])))
