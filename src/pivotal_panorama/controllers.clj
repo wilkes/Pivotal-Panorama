@@ -35,14 +35,14 @@
 
 (defroutes app
   (GET "/"
-       (redirect-to "/current/group/project"))
-  (GET "/current/group/project"
+       (redirect-to (html/urls :current-by-project)))
+  (GET (html/urls :current-by-project)
        (html/current-iterations (map-projects current)))
-  (GET "/current/group/owned_by"
-       (html/current-iterations-by-owner (fetch-current-by-owner)))
-  (GET "/projects"
+  (GET (html/urls :current-by-owner)
+       (html/current-by-owner (fetch-current-by-owner)))
+  (GET (html/urls :list-projects)
        (html/list-projects (*pt-user* projects)))
-  (GET "/projects/:id"
+  (GET (html/urls :project-summary)
        (html/not-implemented "Project Summary"))
   (ANY "*"
        (or (serve-file (params :*))

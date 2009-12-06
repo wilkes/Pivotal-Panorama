@@ -4,12 +4,29 @@
         [clj-pt :only [user project projects current]])
   (:import [java.io File]))
 
+(def urls {:current-by-project "/current/group/project"
+           :current-by-owner   "/current/group/owned_by"
+           :list-projects "/projects"
+           :project-summary "/projects/:id"})
+
+(defn menu-items []
+  (letfn [(menu-item [k title] [:li.menu-item (link-to (urls k) title)])
+          (sep [] [:li.menu-item "|"])]
+    [:ul#menu
+     (menu-item :current-by-project "By Project")
+     (sep)
+     (menu-item :current-by-owner "By Owner")
+     (sep)
+     (menu-item :current-by-requestor "By Requestor")]))
+
 (defn html-document [title & body]
   (html
    [:html
     [:head [:title title]
      (include-css "/css/style.css")]
-    [:body body]]))
+    [:body
+     (menu-items)
+     body]]))
 
 (defn tag [& strings]
   (keyword (apply str strings)))
@@ -57,7 +74,7 @@
            (-> i :iteration :stories)])
         projects-and-iterations)))
 
-(defn current-iterations-by-owner [owners-and-stories]
+(defn current-by-owner [owners-and-stories]
   (grouped-story-page
    "Current by Owner"
    (map (fn [k]

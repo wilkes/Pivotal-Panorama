@@ -85,8 +85,20 @@ ul {
    font-weight: bold;
 }
 
-.started   { background-color: #9FC1CA;} /* blue */
-.finished  { background-color: #EEA679;} /* orange */
-.delivered { background-color: #EFDA8B;} /* yellow */
-.accepted  { background-color: #B9D4A1;} /* green */
-.rejected   { background-color: #EC7B7D;} /* red */
+.started   { background-color: #9FC1CA; }   /* blue   */
+.finished  { background-color: #EEA679; }   /* orange */
+.delivered { background-color: #EFDA8B; }   /* yellow */
+.accepted  { background-color: #B9D4A1; }   /* green  */
+.rejected  { background-color: #EC7B7D; }   /* red    */
+
+ul#menu {
+   padding: 0 0 0 5px;
+}
+
+ul#menu li {
+   margin: 0;
+   display: inline;
+   padding-right: 3px;
+   font-weight: bold;
+   font-size: larger;
+}
