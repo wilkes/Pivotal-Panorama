@@ -19,11 +19,11 @@
   (apply merge-with concat
    (map (fn [v] {(index-fn v) [v]}) ms)))
 
-(defn fetch-current-by-owner []
+(defn fetch-current-stories-by [k]
   (apply merge-with concat
          (map (fn [[_ [i]]]
                 (index-maps (-> i :iteration :stories)
-                            #(-> % :story :owned_by)))
+                            #(-> % :story k)))
               (map-projects current))))
 
 (defn serve-classpath-file
@@ -39,7 +39,9 @@
   (GET (html/urls :current-by-project)
        (html/current-iterations (map-projects current)))
   (GET (html/urls :current-by-owner)
-       (html/current-by-owner (fetch-current-by-owner)))
+       (html/current-by "Owner" (fetch-current-stories-by :owned_by)))
+  (GET (html/urls :current-by-requestor)
+       (html/current-by "Requestor" (fetch-current-stories-by :requested_by)))
   (GET (html/urls :list-projects)
        (html/list-projects (*pt-user* projects)))
   (GET (html/urls :project-summary)

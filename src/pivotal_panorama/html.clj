@@ -6,6 +6,7 @@
 
 (def urls {:current-by-project "/current/group/project"
            :current-by-owner   "/current/group/owned_by"
+           :current-by-requestor   "/current/group/requestor"
            :list-projects "/projects"
            :project-summary "/projects/:id"})
 
@@ -17,7 +18,7 @@
      (sep)
      (menu-item :current-by-owner "By Owner")
      (sep)
-     (menu-item :current-by-requestor "By Requestor")]))
+     (menu-item :current-by-requestor "By Requestor" )]))
 
 (defn html-document [title & body]
   (html
@@ -74,13 +75,14 @@
            (-> i :iteration :stories)])
         projects-and-iterations)))
 
-(defn current-by-owner [owners-and-stories]
+(defn current-by [title keys-and-stories]
   (grouped-story-page
-   "Current by Owner"
+   (str "Current by "
+        title)
    (map (fn [k]
           (let [k (or k "Unassigned")]
-            [k (owners-and-stories k)]))
-        (sort (keys owners-and-stories)))))
+            [k (keys-and-stories k)]))
+        (sort (keys keys-and-stories)))))
 
 (defn not-implemented [feature]
   (let [title (str "Not Implemented: " feature)]
