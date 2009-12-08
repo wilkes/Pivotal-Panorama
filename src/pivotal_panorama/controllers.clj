@@ -10,7 +10,7 @@
   (def *pt-user* (user token)))
 
 (defn on-project [p args]
-  (future [p (apply (*pt-user* project (-> p :project :id)) args)]))
+  (future [p (apply (*pt-user* project (-> p :id)) args)]))
 
 (defn map-projects [& args]
   (map deref (map #(on-project % args) (*pt-user* projects))))
@@ -22,8 +22,8 @@
 (defn fetch-current-stories-by [k]
   (apply merge-with concat
          (map (fn [[_ [i]]]
-                (index-maps (-> i :iteration :stories)
-                            #(-> % :story k)))
+                (index-maps (:stories i)
+                            k))
               (map-projects current))))
 
 (defn serve-classpath-file

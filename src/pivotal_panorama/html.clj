@@ -53,8 +53,8 @@
   (html-document "Projects"
    [:h1 "Projects"]
    (unordered-list
-    (map #(link-to (str "/projects/" (-> % :project :id))
-                   (-> % :project :name))
+    (map #(link-to (str "/projects/" (:id %))
+                   :name)
          projects))))
 
 (defn grouped-story-page [title tuples]
@@ -64,21 +64,20 @@
           (when (seq vs)
             [:div.project
              [:h1 k]
-             (map #(story-card (:story %)) vs)
+             (map story-card vs)
              [:div.clear]]))
         tuples)))
 
 (defn current-iterations [projects-and-iterations]
   (grouped-story-page "Current"
    (map (fn [[p [i]]]
-          [(-> p :project :name)
-           (-> i :iteration :stories)])
+          [(:name p)
+           (:stories i)])
         projects-and-iterations)))
 
 (defn current-by [title keys-and-stories]
   (grouped-story-page
-   (str "Current by "
-        title)
+   (str "Current by " title)
    (map (fn [k]
           (let [k (or k "Unassigned")]
             [k (keys-and-stories k)]))
