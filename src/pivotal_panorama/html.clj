@@ -49,14 +49,6 @@
     (html-card story "story" (:current_state story)
                :name :description :owned_by :current_state :url)))
 
-(defn list-projects [projects]
-  (html-document "Projects"
-   [:h1 "Projects"]
-   (unordered-list
-    (map #(link-to (str "/projects/" (:id %))
-                   :name)
-         projects))))
-
 (defn grouped-story-page [title tuples]
   (html-document
    title
@@ -67,13 +59,6 @@
              (map story-card vs)
              [:div.clear]]))
         tuples)))
-
-(defn current-iterations [projects-and-iterations]
-  (grouped-story-page "Current"
-   (map (fn [[p [i]]]
-          [(:name p)
-           (:stories i)])
-        projects-and-iterations)))
 
 (defn current-by [title keys-and-stories]
   (grouped-story-page
