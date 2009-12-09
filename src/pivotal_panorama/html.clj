@@ -4,21 +4,20 @@
         [clj-pt :only [user project projects current]])
   (:import [java.io File]))
 
-(def urls {:current-by-project "/current/group/project"
-           :current-by-owner   "/current/group/owned_by"
-           :current-by-requestor   "/current/group/requestor"
-           :list-projects "/projects"
-           :project-summary "/projects/:id"})
+(def urls {:group-by "/group/:iteration/:grouping"})
+
+(defn group-by-url [iteration grouping]
+  (str "/group/" iteration "/" grouping))
 
 (defn menu-items []
-  (letfn [(menu-item [k title] [:li.menu-item (link-to (urls k) title)])
+  (letfn [(menu-item [href title] [:li.menu-item (link-to href title)])
           (sep [] [:li.menu-item "|"])]
     [:ul#menu
-     (menu-item :current-by-project "By Project")
+     (menu-item (group-by-url "current" "project") "By Project")
      (sep)
-     (menu-item :current-by-owner "By Owner")
+     (menu-item (group-by-url "current" "owned_by") "By Owner")
      (sep)
-     (menu-item :current-by-requestor "By Requestor" )]))
+     (menu-item (group-by-url "current" "requested_by") "By Requestor" )]))
 
 (defn story-state-filter []
   (form-to [:get] (drop-down "story-state"
@@ -55,14 +54,6 @@
     (html-card story "story" (:current_state story)
                :name :description :owned_by :current_state :url)))
 
-(defn list-projects [projects]
-  (html-document "Projects"
-   [:h1 "Projects"]
-   (unordered-list
-    (map #(link-to (str "/projects/" (-> % :project :id))
-                   (-> % :project :name))
-         projects))))
-
 (defn grouped-story-page [title tuples]
   (html-document
    title
@@ -70,24 +61,15 @@
           (when (seq vs)
             [:div.project
              [:h1 k]
-             (map #(story-card (:story %)) vs)
+             (map story-card vs)
              [:div.clear]]))
         tuples)))
 
-(defn current-iterations [projects-and-iterations]
-  (grouped-story-page "Current"
-   (map (fn [[p [i]]]
-          [(-> p :project :name)
-           (-> i :iteration :stories)])
-        projects-and-iterations)))
-
 (defn current-by [title keys-and-stories]
   (grouped-story-page
-   (str "Current by "
-        title)
-   (map (fn [k]
-          (let [k (or k "Unassigned")]
-            [k (keys-and-stories k)]))
+   (str "Current by " (humanize title))
+   (map (fn [k] 
+          [(or k "Unassigned") (keys-and-stories k)])
         (sort (keys keys-and-stories)))))
 
 (defn not-implemented [feature]
