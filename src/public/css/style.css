@@ -4,10 +4,6 @@ body, p, ol, ul, td, th, input, textarea {
    font-weight: normal;
 }
 
-/*body, p, ol, ul {
-  line-height: 21px;
-}*/
-
 body {
    margin: 0px;
 }

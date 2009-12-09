@@ -1,9 +1,9 @@
 (ns pivotal-panorama.controllers
-  (:require [pivotal-panorama.html :as html])
   (:use [compojure :only [defroutes GET ANY serve-file redirect-to]]
         [clj-pt :only [user project projects current]]
         [clojure.contrib.seq-utils :only [flatten]]
-        [pivotal-panorama.html :only [urls current-by]])
+        [pivotal-panorama.html :only [urls current-by]]
+        clojure.contrib.pprint)
   (:import [java.io File]))
 
 (declare *pt-user*)
@@ -22,11 +22,14 @@
 
 (defn index-maps [ms index-fn]
   (apply merge-with concat
-   (map (fn [v] {(index-fn v) [v]}) ms)))
+         (map (fn [v] {(index-fn v) [v]}) ms)))
 
-(defn fetch-current-stories-by [k]
-  (letfn [(make-map [[_ [i]]] (index-maps (:stories i) k))]
-    (apply merge-with concat (map make-map (map-projects current)))))
+(defn fetch-stories-by [iteration-fn grouping]
+  (let [make-maps (fn [[_ iterations]]
+                    (map #(index-maps (:stories %) grouping)
+                         iterations))
+        story-maps (filter identity (flatten (map make-maps (map-projects iteration-fn))))]
+    (apply merge-with concat story-maps)))
 
 (defn serve-classpath-file
   "Serves a file off the classpath, i.e. bundled in the jar."
@@ -35,18 +38,20 @@
   ([root path]
      (ClassLoader/getSystemResource (str root path))))
 
+(defn resolve-action [s]
+  (ns-resolve 'clj-pt (symbol s)))
+
 (defroutes app
   (GET "/"
-       (redirect-to (html/urls :current-by-project)))
-  (GET (urls :current-by-project)
+       (redirect-to "/group/current/project"))
+  (GET "/group/current/project"
        (current-by "Project"
                    (group-by-project-name (map-projects current))))
-  (GET (urls :current-by-owner)
-       (current-by "Owner"
-                   (fetch-current-stories-by :owned_by)))
-  (GET (urls :current-by-requestor)
-       (current-by "Requestor"
-                   (fetch-current-stories-by :requested_by)))
+  (GET (urls :group-by)
+       (let [iteration-fn (-> request :route-params :iteration resolve-action)
+             grouping (-> request :route-params :grouping)]
+         (current-by grouping
+                     (fetch-stories-by iteration-fn (keyword grouping)))))
   (ANY "*"
        (or (serve-file (params :*))
            (serve-classpath-file (params :*))

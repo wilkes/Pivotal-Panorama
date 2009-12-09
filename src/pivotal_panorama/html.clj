@@ -1,24 +1,22 @@
 (ns pivotal-panorama.html
   (:use [compojure :only [html unordered-list link-to redirect-to
-                          include-css]]
-        [clj-pt :only [user project projects current]])
+                          include-css]])
   (:import [java.io File]))
 
-(def urls {:current-by-project "/current/group/project"
-           :current-by-owner   "/current/group/owned_by"
-           :current-by-requestor   "/current/group/requestor"
-           :list-projects "/projects"
-           :project-summary "/projects/:id"})
+(def urls {:group-by "/group/:iteration/:grouping"})
+
+(defn group-by-url [iteration grouping]
+  (str "/group/" iteration "/" grouping))
 
 (defn menu-items []
-  (letfn [(menu-item [k title] [:li.menu-item (link-to (urls k) title)])
+  (letfn [(menu-item [href title] [:li.menu-item (link-to href title)])
           (sep [] [:li.menu-item "|"])]
     [:ul#menu
-     (menu-item :current-by-project "By Project")
+     (menu-item (group-by-url "current" "project") "By Project")
      (sep)
-     (menu-item :current-by-owner "By Owner")
+     (menu-item (group-by-url "current" "owned_by") "By Owner")
      (sep)
-     (menu-item :current-by-requestor "By Requestor" )]))
+     (menu-item (group-by-url "current" "requested_by") "By Requestor" )]))
 
 (defn html-document [title & body]
   (html
@@ -62,10 +60,9 @@
 
 (defn current-by [title keys-and-stories]
   (grouped-story-page
-   (str "Current by " title)
-   (map (fn [k]
-          (let [k (or k "Unassigned")]
-            [k (keys-and-stories k)]))
+   (str "Current by " (humanize title))
+   (map (fn [k] 
+          [(or k "Unassigned") (keys-and-stories k)])
         (sort (keys keys-and-stories)))))
 
 (defn not-implemented [feature]
