@@ -1,6 +1,6 @@
 (ns pivotal-panorama.html
-  (:use [compojure :only [html unordered-list link-to redirect-to
-                          include-css]]
+  (:use [compojure :only [html drop-down unordered-list link-to redirect-to
+                          include-css submit-button form-to]]
         [clj-pt :only [user project projects current]])
   (:import [java.io File]))
 
@@ -20,6 +20,11 @@
      (sep)
      (menu-item :current-by-requestor "By Requestor" )]))
 
+(defn story-state-filter []
+  (form-to [:get] (drop-down "story-state"
+                ["All" "Accepted" "Delivered" "Finished"
+                 "Rejected" "Started" "Unstarted"]) (submit-button "Filter")))
+
 (defn html-document [title & body]
   (html
    [:html
@@ -27,6 +32,7 @@
      (include-css "/css/style.css")]
     [:body
      (menu-items)
+     (story-state-filter)
      body]]))
 
 (defn tag [& strings]

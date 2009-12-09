@@ -9,6 +9,7 @@
 (defn set-api-token [token]
   (def *pt-user* (user token)))
 
+
 (defn on-project [p args]
   (future [p (apply (*pt-user* project (-> p :project :id)) args)]))
 
@@ -26,6 +27,8 @@
                             #(-> % :story k)))
               (map-projects current))))
 
+(defn story-filter [])
+ ([let filter (if (nil? (params :story-filter)))]) 
 (defn serve-classpath-file
   "Serves a file off the classpath, i.e. bundled in the jar."
   ([path]
