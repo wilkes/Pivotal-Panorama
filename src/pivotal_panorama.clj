@@ -1,7 +1,7 @@
 (ns pivotal-panorama
   (:gen-class)
   (:use [compojure :only [run-server servlet]]
-        [pivotal-panorama.controllers :only [app set-api-token]]
+        [pivotal-panorama.dispatch :only [app set-api-token]]
         [clj-pt :only [user]]
         [clojure.contrib.except :only [throw-if-not]]))
 

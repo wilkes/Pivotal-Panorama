@@ -87,13 +87,13 @@ ul {
 .accepted  { background-color: #B9D4A1; }   /* green  */
 .rejected  { background-color: #EC7B7D; }   /* red    */
 
-ul#menu {
+#menu {
    padding: 0 0 0 5px;
 }
 
-ul#menu li {
-   margin: 0;
-   display: inline;
+
+#menu span {
+   padding-left: 3px;
    padding-right: 3px;
    font-weight: bold;
    font-size: larger;
