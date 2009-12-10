@@ -1,6 +1,6 @@
 (ns pivotal-panorama.html
   (:use [compojure :only [html drop-down unordered-list link-to redirect-to
-                          include-css submit-button form-to]]
+                          include-css include-js submit-button form-to]]
         [clj-pt :only [user project projects current]])
 
   (:import [java.io File]))
@@ -20,7 +20,15 @@
                        ["Requestor" "requested_by"]
                        ["Owner" "owned_by"]])
 
-(defn menu-items [iteration group-by]
+(def story-filter-options [["All" ""]
+                           ["Accepted" "accepted"]
+                           ["Delivered" "delivered"]
+                           ["Finished" "finished"]
+                           ["Rejected" "rejected"]
+                           ["Started" "started"]
+                           ["Unstarted" "unstarted"]])
+
+(defn menu-items [iteration group-by story-filter]
   [:form
    [:div#menu
     [:span#iteration-item 
@@ -29,13 +37,11 @@
     [:span#group-by-item
      [:span "Group By:"]
      (drop-down "group-by" group-by-options group-by)]
+    [:span#story-filter
+     [:span "Story:"]
+     (drop-down "story-state" story-filter-options story-filter)]
     [:input {:type    "submit"
              :value   "Refresh"}]]])
-
-(defn story-state-filter []
-  (form-to [:get] (drop-down "story-state"
-                ["All" "Accepted" "Delivered" "Finished"
-                 "Rejected" "Started" "Unstarted"]) (submit-button "Filter")))
 
 (defn html-document [title & body]
   (html
@@ -45,7 +51,6 @@
      (include-js "/js/jquery-1.3.2.min.js"
                  "/js/application.js")] 
     [:body
-     (story-state-filter)
      body]]))
 
 (defn tag [& strings]
@@ -68,10 +73,10 @@
     (html-card story "story" (:current_state story)
                :name :description :owned_by :current_state :url)))
 
-(defn grouped-story-page [iteration group-by tuples]
+(defn grouped-story-page [iteration group-by story-filter tuples]
   (html-document
    (str iteration " by " (humanize group-by))
-   (menu-items iteration group-by)   
+   (menu-items iteration group-by story-filter)   
    (map (fn [[k vs]]
           (when (seq vs)
             [:div.project
@@ -80,9 +85,9 @@
              [:div.clear]]))
         tuples)))
 
-(defn current-by [iteration group-by keys-and-stories]
+(defn current-by [iteration group-by story-filter keys-and-stories]
   (grouped-story-page
-   iteration group-by
+   iteration group-by story-filter
    (map (fn [k] 
           [(or k "Unassigned") (keys-and-stories k)])
         (sort (keys keys-and-stories)))))

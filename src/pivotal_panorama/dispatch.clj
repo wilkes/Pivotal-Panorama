@@ -2,7 +2,7 @@
   (:use [compojure :only [defroutes GET ANY serve-file redirect-to]]
         [clj-pt :only [user project projects current]]
         [clojure.contrib.seq-utils :only [flatten]]
-        [clojure.contrib.str-utils2 :only [upper-case]]
+        [clojure.contrib.str-utils2 :only [upper-case blank?]]
         [pivotal-panorama.html :only [urls current-by]]
         clojure.contrib.pprint)
   (:import [java.io File]))
@@ -37,9 +37,9 @@
                                                         (upper-case story-state)))
                              (second %))) rs)))
 
-(defn filter-results [rs params] (if-not
-                                     (nil? (params :story-state))
-                                   (filter-by-story  (params :story-state) rs)
+(defn filter-results [rs story-filter] (if-not
+                                     (blank? story-filter)
+                                   (filter-by-story story-filter rs)
                                    rs)) 
 
 (defn serve-classpath-file
@@ -58,10 +58,12 @@
   (GET (urls :group-by)
        (let [iteration (-> request :route-params :iteration)
              iterfn (resolve-action iteration)
-             group-by (-> request :route-params :group-by)]
+             group-by (-> request :route-params :group-by)
+             story-filter (params :story-state)]
          (current-by iteration
                      group-by
-                     (filter-results (fetch-stories iterfn (keyword group-by))))))
+                     story-filter
+                     (filter-results (fetch-stories iterfn (keyword group-by)) story-filter))))
   (ANY "*"
        (or (serve-file (params :*))
            (serve-classpath-file (params :*))
