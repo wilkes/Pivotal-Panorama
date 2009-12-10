@@ -2,6 +2,7 @@
   (:use [compojure :only [defroutes GET ANY serve-file redirect-to]]
         [clj-pt :only [user project projects current]]
         [clojure.contrib.seq-utils :only [flatten]]
+        [clojure.contrib.str-utils2 :only [upper-case]]
         [pivotal-panorama.html :only [urls current-by]]
         clojure.contrib.pprint)
   (:import [java.io File]))
@@ -32,8 +33,16 @@
         story-maps (filter identity (flatten (map make-maps (map-projects iteration-fn))))]
     (apply merge-with concat story-maps)))
 
-(defn story-filter [])
- ([let filter (if (nil? (params :story-filter)))]) 
+(defn filter-by-story [story-state rs]
+  (apply merge (map #(hash-map (first %) (filter (fn [s]  (= (upper-case (s :current_state))
+                                                        (upper-case story-state)))
+                             (second %))) rs)))
+
+(defn filter-results [rs params] (if-not
+                                     (nil? (params :story-state))
+                                   (filter-by-story  (params :story-state) rs)
+                                   rs)) 
+
 (defn serve-classpath-file
   "Serves a file off the classpath, i.e. bundled in the jar."
   ([path]
@@ -49,12 +58,12 @@
        (redirect-to "/group/current/project"))
   (GET "/group/current/project"
        (current-by "Project"
-                   (group-by-project-name (map-projects current))))
+                   (filter-results (group-by-project-name (map-projects current)) params)))
   (GET (urls :group-by)
        (let [iteration-fn (-> request :route-params :iteration resolve-action)
              grouping (-> request :route-params :grouping)]
-         (current-by grouping
-                     (fetch-stories-by iteration-fn (keyword grouping)))))
+         (filter-results (current-by grouping
+                     (fetch-stories-by iteration-fn (keyword grouping))) params)))
   (ANY "*"
        (or (serve-file (params :*))
            (serve-classpath-file (params :*))
