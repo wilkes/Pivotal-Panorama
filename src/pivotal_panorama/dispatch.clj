@@ -1,4 +1,4 @@
-(ns pivotal-panorama.controllers
+(ns pivotal-panorama.dispatch
   (:use [compojure :only [defroutes GET ANY serve-file redirect-to]]
         [clj-pt :only [user project projects current]]
         [clojure.contrib.seq-utils :only [flatten]]
@@ -18,20 +18,19 @@
 (defn map-projects [& args]
   (map deref (map #(on-project % args) (*pt-user* projects))))
 
-(defn group-by-project-name [projects-and-iterations]
-  (letfn [(make-map [[p [i]]] {(:name p) (:stories i)})]
-    (apply merge (map make-map projects-and-iterations))))
-
 (defn index-maps [ms index-fn]
   (apply merge-with concat
          (map (fn [v] {(index-fn v) [v]}) ms)))
 
-(defn fetch-stories-by [iteration-fn grouping]
-  (let [make-maps (fn [[_ iterations]]
-                    (map #(index-maps (:stories %) grouping)
+(defn fetch-stories [iteration-fn group-by]
+  (let [make-maps (fn [[p iterations]]
+                    (map (fn [iteration]
+                           (if (= group-by :project)
+                             {(:name p) (:stories iteration)}
+                             (index-maps (:stories iteration) group-by)))
                          iterations))
-        story-maps (filter identity (flatten (map make-maps (map-projects iteration-fn))))]
-    (apply merge-with concat story-maps)))
+        story-maps (map make-maps (map-projects iteration-fn))]
+    (apply merge-with concat (filter identity (flatten story-maps)))))
 
 (defn filter-by-story [story-state rs]
   (apply merge (map #(hash-map (first %) (filter (fn [s]  (= (upper-case (s :current_state))
@@ -56,14 +55,13 @@
 (defroutes app
   (GET "/"
        (redirect-to "/group/current/project"))
-  (GET "/group/current/project"
-       (current-by "Project"
-                   (filter-results (group-by-project-name (map-projects current)) params)))
   (GET (urls :group-by)
-       (let [iteration-fn (-> request :route-params :iteration resolve-action)
-             grouping (-> request :route-params :grouping)]
-         (filter-results (current-by grouping
-                     (fetch-stories-by iteration-fn (keyword grouping))) params)))
+       (let [iteration (-> request :route-params :iteration)
+             iterfn (resolve-action iteration)
+             group-by (-> request :route-params :group-by)]
+         (current-by iteration
+                     group-by
+                     (filter-results (fetch-stories iterfn (keyword group-by))))))
   (ANY "*"
        (or (serve-file (params :*))
            (serve-classpath-file (params :*))
