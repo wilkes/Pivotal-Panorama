@@ -16,23 +16,19 @@
 (defn map-projects [& args]
   (map deref (map #(on-project % args) (*pt-user* projects))))
 
-(defn group-by-project-name [projects-and-iterations]
-  (letfn [(project-map [p i] {(:name p) (:stories i)})
-          (make-maps [[p iterations]]
-                     (map #(project-map p %) iterations))]
-    (apply merge-with concat
-           (flatten (map make-maps projects-and-iterations)))))
-
 (defn index-maps [ms index-fn]
   (apply merge-with concat
          (map (fn [v] {(index-fn v) [v]}) ms)))
 
-(defn fetch-stories-by [iteration-fn group-by]
-  (let [make-maps (fn [[_ iterations]]
-                    (map #(index-maps (:stories %) group-by)
+(defn fetch-stories [iteration-fn group-by]
+  (let [make-maps (fn [[p iterations]]
+                    (map (fn [iteration]
+                           (if (= group-by :project)
+                             {(:name p) (:stories iteration)}
+                             (index-maps (:stories iteration) group-by)))
                          iterations))
-        story-maps (filter identity (flatten (map make-maps (map-projects iteration-fn))))]
-    (apply merge-with concat story-maps)))
+        story-maps (map make-maps (map-projects iteration-fn))]
+    (apply merge-with concat (filter identity (flatten story-maps)))))
 
 (defn serve-classpath-file
   "Serves a file off the classpath, i.e. bundled in the jar."
@@ -53,9 +49,7 @@
              group-by (-> request :route-params :group-by)]
          (current-by iteration
                      group-by
-                     (if (= group-by "project")
-                       (group-by-project-name (map-projects iterfn))
-                       (fetch-stories-by iterfn (keyword group-by))))))
+                     (fetch-stories iterfn (keyword group-by)))))
   (ANY "*"
        (or (serve-file (params :*))
            (serve-classpath-file (params :*))
