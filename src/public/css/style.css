@@ -10,7 +10,7 @@ body {
 
 body, .reset{
    color: #404040;
-   background-color: #FFF;
+   background-color: #F4F7FB;
    font-style: normal;
    font-weight: normal;
 }
@@ -101,7 +101,7 @@ ul {
    -moz-box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 5px;
 }
 
-.unstarted { background-color: #F4F7FB; }   /* white-ish */
+.unstarted { background-color: #FFFFFF; }   /* white-ish */
 .started   { background-color: #9FC1CA; }   /* blue      */
 .finished  { background-color: #EEA679; }   /* orange    */
 .delivered { background-color: #EFDA8B; }   /* yellow    */

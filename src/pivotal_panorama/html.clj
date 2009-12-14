@@ -5,8 +5,6 @@
 
   (:import [java.io File]))
 
-(def urls {:group-by "/group/:iteration/:group-by"})
-
 (defn group-by-url [iteration group-by]
   (str "/group/" iteration "/" group-by))
 
@@ -21,12 +19,12 @@
                        ["Owner" "owned_by"]])
 
 (def story-filter-options [["All" ""]
-                           ["Accepted" "accepted"]
-                           ["Delivered" "delivered"]
-                           ["Finished" "finished"]
-                           ["Rejected" "rejected"]
+                           ["Unstarted" "unstarted"]
                            ["Started" "started"]
-                           ["Unstarted" "unstarted"]])
+                           ["Finished" "finished"]
+                           ["Delivered" "delivered"]
+                           ["Accepted" "accepted"]
+                           ["Rejected" "rejected"]])
 
 (defn menu-items [iteration group-by story-filter]
   [:form

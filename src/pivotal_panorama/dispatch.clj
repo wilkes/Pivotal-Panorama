@@ -54,11 +54,11 @@
 
 (defroutes app
   (GET "/"
-       (redirect-to "/group/current/project"))
-  (GET (urls :group-by)
+       (redirect-to "/current?group-by=project"))
+  (GET "/:iteration"
        (let [iteration (-> request :route-params :iteration)
              iterfn (resolve-action iteration)
-             group-by (-> request :route-params :group-by)
+             group-by (params :group-by)
              story-filter (params :story-state)]
          (current-by iteration
                      group-by
