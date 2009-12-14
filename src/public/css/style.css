@@ -65,10 +65,40 @@ ul {
    display:inline;
 }
 
-div.story-accepted_at {
+.story-accepted_at {
    display:block;
    float:none;
    clear:both;
+}
+
+.story-owned_by {
+   font-weight: bold;
+}
+
+.story-url a {
+   float:right;;
+   text-decoration: none;
+}
+
+.bug {
+   -webkit-box-shadow: rgba(255, 0, 0, 0.5) 7px 7px 10px;
+   -moz-box-shadow: rgba(255, 0, 0, 0.5) 7px 7px 10px;
+}
+
+.chore {
+   -webkit-box-shadow: rgba(0, 0, 191, 0.5) 5px 5px 10px;
+   -moz-box-shadow: rgba(0, 0, 191, 0.5) 5px 5px 10px;
+}
+
+.release {
+   border: 2px solid #505050;
+   -webkit-box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 5px;
+   -moz-box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 5px;
+}
+
+.feature {
+   -webkit-box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 5px;
+   -moz-box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 5px;
 }
 
 .unstarted { background-color: #F4F7FB; }   /* white-ish */

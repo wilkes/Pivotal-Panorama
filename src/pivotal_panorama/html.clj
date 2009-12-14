@@ -51,17 +51,22 @@
    [:div.clear]
    [:div.card-others
     (map (fn [k]
-           [(tag "div.card-other." type "-" (name k)) (k m)])
+           (if (k m)
+             [(tag "div.card-other." type "-" (name k)) (k m)]))
          other-keys)]])
 
 (defn humanize [s]
   (.replaceAll s "_" " "))
 
 (defn story-card [s]
-  (let [story (merge s {:url (link-to (:url s) "Edit")
-                        :current_state (:current_state s)})]
-    (html-card story "story" (:current_state story)
-               :name :description :accepted_at :url :owned_by :current_state)))
+  (let [story (merge s {:url (link-to (:url s) "edit")})
+        card-class (str (:story_type story) "." (:current_state story))]
+    (html-card story "story" card-class
+               :name
+               :description
+               :accepted_at
+               :current_state :story_type :owned_by
+               :url)))
 
 (defn grouped-story-page [iteration group-by tuples]
   (html-document
