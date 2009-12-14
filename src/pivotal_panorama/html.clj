@@ -43,13 +43,16 @@
 (defn tag [& strings]
   (keyword (apply str strings)))
 
-(defn html-card [m type card-class & keys]
+(defn html-card [m type card-class title-key body-key & other-keys]
   [(tag "div.card." type "-card" (when card-class
                                    (str "." card-class)))
-   (map (fn [k]
-          [(tag "div.card-content." type "-" (name k)) (k m)])
-        keys)
-   [:div.clear]])
+   [(tag "div.card-title." type "-" (name title-key)) (title-key m)]
+   [(tag "div.card-body." type "-" (name body-key)) (body-key m)]
+   [:div.clear]
+   [:div.card-others
+    (map (fn [k]
+           [(tag "div.card-other." type "-" (name k)) (k m)])
+         other-keys)]])
 
 (defn humanize [s]
   (.replaceAll s "_" " "))
@@ -58,7 +61,7 @@
   (let [story (merge s {:url (link-to (:url s) "Edit")
                         :current_state (:current_state s)})]
     (html-card story "story" (:current_state story)
-               :name :description :owned_by :current_state :url)))
+               :name :description :accepted_at :url :owned_by :current_state)))
 
 (defn grouped-story-page [iteration group-by tuples]
   (html-document
