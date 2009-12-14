@@ -9,7 +9,8 @@ body {
 }
 
 body, .reset{
-   color: #222;
+   color: #404040;
+   background-color: #FFF;
    font-style: normal;
    font-weight: normal;
 }
@@ -28,64 +29,84 @@ ul {
    margin: 5px;
 }
 
-.project h1 {
-   color: #333;
-}
-
 .card {
    position: relative;
    float:left;
    width: 300px;
-   min-height: 100px;
-   border: 1px solid #333;
-   margin: 5px;
+   border: 1px solid #999;
+   margin: 10px;
+   -webkit-border-radius: 3px;
+   -moz-border-radius: 3px;
+   -webkit-box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 5px;
+   -moz-box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 5px;
 }
 
-.card-content {
-   padding: 2px;
+.card-content, .card-title, .card-body {
+   padding: 3px;
 }
 
 .story-name {
    font-weight: bold;
    font-size: 1.25em;
-   border-bottom: 2px solid #333;
+   border-bottom: 1px solid #909090;
 }
 
 .story-description {
+   color: #505050;
+   padding: 15px;
+}
+
+.card-others {
    padding: 5px;
+}
+
+.card-other {
+   margin-right: 5px;
+   display:inline;
+}
+
+.story-accepted_at {
+   display:block;
+   float:none;
+   clear:both;
 }
 
 .story-owned_by {
    font-weight: bold;
-   float:right;
-   position:absolute;
-   bottom: 0px;
-   right: 0px;
 }
 
-.story-url {
-   position: absolute;
-   bottom: 0px;
-   left: 0;
-}
 .story-url a {
+   float:right;;
    text-decoration: none;
-   font-size: smaller;
 }
 
-.story-current_state {
-   position: absolute;
-   bottom: 0;
-   left: 120px;
-   font-variant: small-caps;
-   font-weight: bold;
+.bug {
+   -webkit-box-shadow: rgba(255, 0, 0, 0.5) 7px 7px 10px;
+   -moz-box-shadow: rgba(255, 0, 0, 0.5) 7px 7px 10px;
 }
 
-.started   { background-color: #9FC1CA; }   /* blue   */
-.finished  { background-color: #EEA679; }   /* orange */
-.delivered { background-color: #EFDA8B; }   /* yellow */
-.accepted  { background-color: #B9D4A1; }   /* green  */
-.rejected  { background-color: #EC7B7D; }   /* red    */
+.chore {
+   -webkit-box-shadow: rgba(0, 0, 191, 0.5) 5px 5px 10px;
+   -moz-box-shadow: rgba(0, 0, 191, 0.5) 5px 5px 10px;
+}
+
+.release {
+   border: 2px solid #505050;
+   -webkit-box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 5px;
+   -moz-box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 5px;
+}
+
+.feature {
+   -webkit-box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 5px;
+   -moz-box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 5px;
+}
+
+.unstarted { background-color: #F4F7FB; }   /* white-ish */
+.started   { background-color: #9FC1CA; }   /* blue      */
+.finished  { background-color: #EEA679; }   /* orange    */
+.delivered { background-color: #EFDA8B; }   /* yellow    */
+.accepted  { background-color: #B9D4A1; }   /* green     */
+.rejected  { background-color: #EC7B7D; }   /* red       */
 
 #menu {
    padding: 0 0 0 5px;
