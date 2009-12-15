@@ -3,7 +3,7 @@
         [clj-pt :only [user project projects current]]
         [clojure.contrib.seq-utils :only [flatten]]
         [clojure.contrib.str-utils2 :only [upper-case blank?]]
-        [pivotal-panorama.html :only [urls current-by]]
+        [pivotal-panorama.html :only [current-by]]
         clojure.contrib.pprint)
   (:import [java.io File]))
 
