@@ -1,7 +1,8 @@
 (ns pivotal-panorama.html
   (:use [compojure :only [html drop-down unordered-list link-to redirect-to
                           include-css include-js submit-button form-to]]
-        [clj-pt :only [user project projects current]])
+        [clj-pt :only [user project projects current]]
+        [clojure.contrib.str-utils2 :only [capitalize]])
 
   (:import [java.io File]))
 
@@ -70,8 +71,10 @@
   (.replaceAll s "_" " "))
 
 (defn story-card [s]
-  (let [story (merge s {:url (link-to (:url s) "edit")})
-        card-class (str (:story_type story) "." (:current_state story))]
+  (let [story (merge s {:url (link-to (:url s) "edit")
+                        :current_state (capitalize (:current_state s))
+                        :story_type (capitalize (:story_type s))})
+        card-class (str (:story_type s) "." (:current_state s))]
     (html-card story "story" card-class
                :name
                :description
@@ -81,7 +84,7 @@
 
 (defn grouped-story-page [iteration group-by story-filter tuples]
   (html-document
-   (str iteration " by " (humanize group-by))
+   (str (capitalize iteration) " by " (humanize group-by))
    (menu-items iteration group-by story-filter)   
    (map (fn [[k vs]]
           (when (seq vs)
