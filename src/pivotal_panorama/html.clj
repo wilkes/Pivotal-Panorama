@@ -72,6 +72,7 @@
 
 (defn story-card [s]
   (let [story (merge s {:url (link-to (:url s) "edit")
+                        :project-url (link-to (:project-link s) (:project-name s))
                         :current_state (capitalize (:current_state s))
                         :story_type (capitalize (:story_type s))})
         card-class (str (:story_type s) "." (:current_state s))]
@@ -80,7 +81,8 @@
                :description
                :accepted_at
                :current_state :story_type :owned_by
-               :url)))
+               :url
+               :project-url)))
 
 (defn grouped-story-page [iteration group-by story-filter tuples]
   (html-document
