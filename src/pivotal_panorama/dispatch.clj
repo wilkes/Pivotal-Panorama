@@ -22,6 +22,9 @@
   (apply merge-with concat
          (map (fn [v] {(index-fn v) [v]}) ms)))
 
+(defn get-project-link [proj]
+  (str "http://www.pivotaltracker.com/projects/" (proj :id)))
+
 (defn fetch-stories [iteration-fn group-by]
   (let [make-maps (fn [[p iterations]]
                     (map (fn [iteration]
@@ -37,9 +40,6 @@
                     )
         story-maps (map make-maps (map-projects iteration-fn))]
     (apply merge-with concat (filter identity (flatten story-maps)))))
-
-(defn get-project-link [proj]
-  (str "http://www.pivotaltracker.com/projects/" (proj :id)))
 
 (defn filter-by-story [story-state rs]
   (apply merge (map #(hash-map (first %) (filter (fn [s]  (= (upper-case (s :current_state))
