@@ -22,24 +22,19 @@
   (apply merge-with concat
          (map (fn [v] {(index-fn v) [v]}) ms)))
 
-(defn get-project-link [proj]
-  (str "http://www.pivotaltracker.com/projects/" (proj :id)))
+(defn group-iteration [group-by p iteration]
+  (let [stories (map #(merge % {:project-link (str "http://www.pivotaltracker.com/projects/" (p :id))
+                                :project-name (:name p)})
+                     (:stories iteration))]
+    (if (= group-by :project)
+      {(:name p) stories}
+      (index-maps stories group-by))))
 
 (defn fetch-stories [iteration-fn group-by]
-  (let [make-maps (fn [[p iterations]]
-                    (map (fn [iteration]
-                           (let [stories (map (fn [story]
-                                                (merge story
-                                                       {:project-link (get-project-link p)}
-                                                       {:project-name (:name p)}))
-                                              (:stories iteration))]
-                            (if (= group-by :project)
-                             {(:name p) stories}
-                             (index-maps stories group-by))))
-                         iterations)
-                    )
-        story-maps (map make-maps (map-projects iteration-fn))]
-    (apply merge-with concat (filter identity (flatten story-maps)))))
+  (let [group-stories (fn [[p iterations]]
+                          (map #(group-iteration group-by p %) iterations))]
+    (apply merge-with concat
+           (flatten (map group-stories (map-projects iteration-fn))))))
 
 (defn filter-by-story [story-state rs]
   (apply merge (map #(hash-map (first %) (filter (fn [s]  (= (upper-case (s :current_state))
