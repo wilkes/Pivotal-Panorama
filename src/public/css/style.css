@@ -86,18 +86,41 @@ ul {
    padding-bottom: 3px;
 }
 
+.unstarted { background-color: #FFFFFF; }   /* white-ish */
+.started   { background-color: #9FC1CA; }   /* blue      */
+.finished  { background-color: #EEA679; }   /* orange    */
+.delivered { background-color: #EFDA8B; }   /* yellow    */
+.accepted  { background-color: #B9D4A1; }   /* green     */
+.rejected  { background-color: #EC7B7D; }   /* red       */
+
+
+.unstarted a { color: #999999; }   /* white-ish */
+.started   a { color: #3D626C; }   /* blue      */
+.finished  a { color: #A17052; }   /* orange    */
+.delivered a { color: #8E771F; }   /* yellow    */
+.accepted  a { color: #5D7E40; }   /* green     */
+.rejected  a { color: #811415; }   /* red       */
+
+.bug.accepted  a { color: #5D7E40; }   /* green     */
+.bug  a { color: #811415; }   /* red       */
+
 .bug {
-   -webkit-box-shadow: rgba(255, 0, 0, 0.5) 7px 7px 10px;
-   -moz-box-shadow: rgba(255, 0, 0, 0.5) 7px 7px 10px;
+   background-color: rgba(191, 0, 0, 0.1);
+   border: 1px solid rgba(191, 0, 0, 0.5);
+   -webkit-box-shadow: rgba(191, 0, 0, 0.5) 5px 5px 10px;
+   -moz-box-shadow: rgba(191, 0, 0, 0.5) 5px 5px 10px;
 }
 
+.bug.accepted {background-color: #B9D4A1;}
+
 .chore {
+   border: 1px solid rgba(0,0,191, 0.5);
    -webkit-box-shadow: rgba(0, 0, 191, 0.5) 5px 5px 10px;
    -moz-box-shadow: rgba(0, 0, 191, 0.5) 5px 5px 10px;
 }
 
 .release {
-   border: 2px solid #505050;
+   border: 2px solid rgba(0, 0, 0, 0.5);
    -webkit-box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 5px;
    -moz-box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 5px;
 }
@@ -106,13 +129,6 @@ ul {
    -webkit-box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 5px;
    -moz-box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 5px;
 }
-
-.unstarted { background-color: #FFFFFF; }   /* white-ish */
-.started   { background-color: #9FC1CA; }   /* blue      */
-.finished  { background-color: #EEA679; }   /* orange    */
-.delivered { background-color: #EFDA8B; }   /* yellow    */
-.accepted  { background-color: #B9D4A1; }   /* green     */
-.rejected  { background-color: #EC7B7D; }   /* red       */
 
 #menu {
    padding: 0 0 0 5px;
