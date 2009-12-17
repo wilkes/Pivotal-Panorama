@@ -51,8 +51,8 @@ a {
    width: 300px;
    border: 1px solid #999;
    margin: 5px;
-   -webkit-border-radius: 3px;
-   -moz-border-radius: 3px;
+   -webkit-border-radius: 5px;
+   -moz-border-radius: 5px;
    -webkit-box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 5px;
    -moz-box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 5px;
 }

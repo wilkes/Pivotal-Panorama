@@ -6,23 +6,35 @@
 
   (:import [java.io File]))
 
-(def iteration-options [["Current" "current"]
-                        ["Backlog" "backlog"]
-                        ["Done"     "done"]])
+(defn title-case [s]
+  (apply str (interpose " " (map capitalize (.split s " ")))))
 
-(def group-by-options [["Project" "project"]
-                       ["Story Type" "story_type"]
-                       ["State" "current_state"]
-                       ["Requestor" "requested_by"]
-                       ["Owner" "owned_by"]])
+(defn humanize [s]
+  (apply str (interpose " " (.split s "_"))))
 
-(def story-filter-options [["All" ""]
-                           ["Unstarted" "unstarted"]
-                           ["Started" "started"]
-                           ["Finished" "finished"]
-                           ["Delivered" "delivered"]
-                           ["Accepted" "accepted"]
-                           ["Rejected" "rejected"]])
+(def as-title (comp title-case humanize))
+
+(defn make-option [s]
+  [(as-title s) s])
+
+(def iteration-options (map make-option ["current"
+                                         "backlog"
+                                         "done"]))
+
+(def group-by-options (map make-option ["project"
+                                        "story_type"
+                                        "current_state"
+                                        "requested_by"
+                                        "owned_by"]))
+
+(def story-filter-options
+     (concat [["All" ""]]
+             (map make-option ["unstarted"
+                               "started"
+                               "finished"
+                               "delivered"
+                               "accepted"
+                               "rejected"])))
 
 (defn menu-items [iteration group-by story-filter]
   [:form
@@ -34,7 +46,7 @@
      [:span "Group By:"]
      (drop-down "group-by" group-by-options group-by)]
     [:span#story-filter
-     [:span "Story:"]
+     [:span "Filter by Story State:"]
      (drop-down "story-state" story-filter-options story-filter)]
     [:input {:type    "submit"
              :value   "Refresh"}]]])
@@ -70,8 +82,8 @@
 (defn story-card [s]
   (let [story (merge s {:url (link-to (:url s) "edit")
                         :project-url (link-to (:project-link s) (:project-name s))
-                        :current_state (capitalize (:current_state s))
-                        :story_type (capitalize (:story_type s))})
+                        :current_state (as-title (:current_state s))
+                        :story_type (as-title (:story_type s))})
         card-class (str (:story_type s) "." (:current_state s))]
     (html-card story "story" card-class
                :name
@@ -82,7 +94,7 @@
 
 (defn grouped-story-page [iteration group-by story-filter tuples]
   (html-document
-   (str (capitalize iteration) " by " (.replaceAll group-by "_" " "))
+   (str (as-title iteration) " by " (as-title group-by))
    (menu-items iteration group-by story-filter)   
    (map (fn [[k vs]]
           (when (seq vs)

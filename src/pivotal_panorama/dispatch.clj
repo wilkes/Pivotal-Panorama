@@ -1,6 +1,6 @@
 (ns pivotal-panorama.dispatch
   (:use [compojure :only [defroutes GET ANY serve-file redirect-to]]
-        [clj-pt :only [user project projects current]]
+        [clj-pt :only [user project projects current all-projects]]
         [clojure.contrib.seq-utils :only [flatten]]
         [pivotal-panorama.html :only [current-by]]
         clojure.contrib.pprint)
@@ -9,12 +9,6 @@
 (declare *pt-user*)
 (defn set-api-token [token]
   (def *pt-user* (user token)))
-
-(defn on-project [p args]
-  (future [p (apply (*pt-user* project (-> p :id)) args)]))
-
-(defn map-projects [& args]
-  (map deref (map #(on-project % args) (*pt-user* projects))))
 
 (defn index-maps [ms index-fn]
   (apply merge-with concat
@@ -35,7 +29,7 @@
   (let [group-stories (fn [[p iterations]]
                           (map #(group-iteration group-by story-filter p %) iterations))]
     (apply merge-with concat
-           (flatten (map group-stories (map-projects iteration-fn))))))
+           (flatten (map group-stories (*pt-user* all-projects iteration-fn))))))
 
 (defn serve-classpath-file
   "Serves a file off the classpath, i.e. bundled in the jar."
