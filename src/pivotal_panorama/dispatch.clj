@@ -21,7 +21,7 @@
          (map (fn [v] {(index-fn v) [v]}) ms)))
 
 (defn group-iteration [group-by story-filter p iteration]
-  (let [story-filter #(if story-filter
+  (let [story-filter #(if (seq story-filter)
                         (= (:current_state %) story-filter)
                         true)
         add-project-info #(merge % {:project-link (str "http://www.pivotaltracker.com/projects/" (p :id))
