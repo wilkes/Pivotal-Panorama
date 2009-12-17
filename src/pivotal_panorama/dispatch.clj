@@ -37,8 +37,6 @@
     (apply merge-with concat
            (flatten (map group-stories (map-projects iteration-fn))))))
 
- 
-
 (defn serve-classpath-file
   "Serves a file off the classpath, i.e. bundled in the jar."
   ([path]

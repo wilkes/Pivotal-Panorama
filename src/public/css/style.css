@@ -56,13 +56,17 @@ ul {
    padding: 15px;
 }
 
-.card-others {
+.card-footer {
    padding: 5px;
 }
 
-.card-other {
+.card-footer > div {
    margin-right: 5px;
    display:inline;
+}
+
+.card-body, .card-footer {
+   display: none;
 }
 
 .story-accepted_at {
