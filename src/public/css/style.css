@@ -10,7 +10,7 @@ body {
 
 body, .reset{
    color: #404040;
-   background-color: #F4F7FB;
+   background-color: #E5E5E5;
    font-style: normal;
    font-weight: normal;
 }
@@ -19,11 +19,27 @@ ul {
    list-style-type: none;
 }
 
+a {
+   text-decoration: none; 
+}
+
 .clear {
    clear:both;
 }
 
-.project {
+#menu {
+   padding: 0 0 0 5px;
+}
+
+
+#menu span {
+   padding-left: 3px;
+   padding-right: 3px;
+   font-weight: bold;
+   font-size: larger;
+}
+
+.group-by {
    position:relative;
    clear:both;
    margin: 5px;
@@ -34,7 +50,7 @@ ul {
    float:left;
    width: 300px;
    border: 1px solid #999;
-   margin: 10px;
+   margin: 5px;
    -webkit-border-radius: 3px;
    -moz-border-radius: 3px;
    -webkit-box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 5px;
@@ -53,7 +69,7 @@ ul {
 
 .story-description {
    color: #505050;
-   padding: 15px;
+   margin: 15px;
 }
 
 .card-footer {
@@ -61,33 +77,34 @@ ul {
 }
 
 .card-footer > div {
-   margin-right: 5px;
+   margin-right: 3px;
+   margin-bottom: 2px;
    display:inline;
+}
+.card-footer > div.clear {
+   display:block;
 }
 
 .card-body, .card-footer {
    display: none;
 }
 
-.story-accepted_at {
-   display:block;
-   float:none;
-   clear:both;
-}
-
 .story-owned_by {
    font-weight: bold;
 }
 
-.story-url a {
-   float:right;;
+div.story-url {
+   float:right;
    text-decoration: none;
 }
 
+div.story-accepted_at {
+   float:right;
+}
+
+
 .story-project-url {
-   clear:both;
    float: left;
-   padding-bottom: 3px;
 }
 
 .unstarted { background-color: #FFFFFF; }   /* white-ish */
@@ -132,16 +149,4 @@ ul {
 .feature {
    -webkit-box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 5px;
    -moz-box-shadow: rgba(0, 0, 0, 0.5) 5px 5px 5px;
-}
-
-#menu {
-   padding: 0 0 0 5px;
-}
-
-
-#menu span {
-   padding-left: 3px;
-   padding-right: 3px;
-   font-weight: bold;
-   font-size: larger;
 }

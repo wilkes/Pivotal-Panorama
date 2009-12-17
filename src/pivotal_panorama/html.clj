@@ -55,12 +55,17 @@
 (defn html-card [m type card-class title-key body-key & other-keys]
   [(tag "div.card." type "-card" (str "." card-class))
    [(tag "div.card-title." type "-" (name title-key)) (title-key m)]
-   [(tag "div.card-body." type "-" (name body-key)) (body-key m)]
+   (if (seq (body-key m))
+     [(tag "div.card-body." type "-" (name body-key)) (body-key m)])
    [:div.clear]
    [:div.card-footer
-    (map (fn [k] (if (k m)
-                   [(tag "div." type "-" (name k)) (k m)]))
-         other-keys)]])
+    (map (fn [k]
+           (if (= k :clear)
+             [:div.clear]
+             (if (seq (k m))
+               [(tag "div." type "-" (name k)) (k m)])))
+         other-keys)]
+   [:div.clear]])
 
 (defn story-card [s]
   (let [story (merge s {:url (link-to (:url s) "edit")
@@ -71,10 +76,9 @@
     (html-card story "story" card-class
                :name
                :description
-               :accepted_at
-               :current_state :story_type :owned_by
-               :url
-               :project-url)))
+               :current_state :story_type :owned_by :url
+               :clear
+               :project-url :accepted_at)))
 
 (defn grouped-story-page [iteration group-by story-filter tuples]
   (html-document
@@ -82,7 +86,7 @@
    (menu-items iteration group-by story-filter)   
    (map (fn [[k vs]]
           (when (seq vs)
-            [:div.project
+            [:div.group-by
              [:h1 k]
              (map story-card vs)
              [:div.clear]]))
