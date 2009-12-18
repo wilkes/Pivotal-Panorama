@@ -62,6 +62,7 @@ a {
 }
 
 .story-name {
+   cursor: pointer;
    font-weight: bold;
    font-size: 1.25em;
    border-bottom: 1px solid #909090;

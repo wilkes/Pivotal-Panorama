@@ -1,7 +1,6 @@
 (ns pivotal-panorama.html
   (:use [compojure :only [html drop-down unordered-list link-to redirect-to
                           include-css include-js submit-button form-to]]
-        [clj-pt :only [user project projects current]]
         [clojure.contrib.str-utils2 :only [capitalize]])
 
   (:import [java.io File]))
